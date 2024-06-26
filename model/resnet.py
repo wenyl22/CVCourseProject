@@ -37,6 +37,8 @@ class Resnet(nn.Module):
         model += [nn.Conv2d(ngf, output_nc, kernel_size=7, padding=0)]
         model += [nn.Tanh()]
         self.model = nn.Sequential(*model)
+    def forward(self, x):
+        return self.model(x)
 
 class ResnetBlock(nn.Module):
     def __init__(self, dim, padding_type, norm_layer, use_dropout, use_bias):

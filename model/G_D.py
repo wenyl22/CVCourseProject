@@ -6,11 +6,18 @@ from torch.optim import lr_scheduler
 from .resnet import Resnet
 from .patchgan import Patchgan
 
+def get_scheduler(optimizer, opt):
+    def lambda_rule(epoch):
+        lr_l = 1.0 - max(0, epoch + opt.epoch_count - opt.n_epochs) / float(opt.n_epochs_decay + 1)
+        return lr_l
+    scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda_rule)
+    return scheduler
+
 def init_weight(m):
     classname = m.__class__.__name__
     if hasattr(m, 'weight') and (classname.find('Conv') != -1 or classname.find('Linear') != -1):
         # use kaiming initialization
-        init.kaiming_normal_(m.weight.data, a=0, mode='fan_in')
+        init.normal_(m.weight.data, 0.0, 0.02)
         if hasattr(m, 'bias') and m.bias is not None:
             init.constant_(m.bias.data, 0.0)
     elif classname.find('BatchNorm2d') != -1:
