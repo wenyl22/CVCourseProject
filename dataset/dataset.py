@@ -36,8 +36,8 @@ def get_transform(opt, grayscale=False):
 class Dataset(Dataset):
     def __init__(self, opt):
         dataroot = 'dataset/' + opt.dataroot
-        self.dir_A = os.path.join(dataroot, opt.phase + 'A')
-        self.dir_B = os.path.join(dataroot, opt.phase + 'B')
+        self.dir_A = os.path.join(dataroot, 'train' + 'A')
+        self.dir_B = os.path.join(dataroot, 'train' + 'B')
         self.A_paths = sorted(get_path(self.dir_A, opt.max_dataset_size))
         self.B_paths = sorted(get_path(self.dir_B, opt.max_dataset_size))
         self.A_size = len(self.A_paths)

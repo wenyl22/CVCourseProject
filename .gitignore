@@ -1,3 +1,7 @@
 dataset/monet2photo
+dataset/photo2paint
+dataset/anime2paint
 */**/__pycache__
 checkpoints/
+results/
+result_anime/

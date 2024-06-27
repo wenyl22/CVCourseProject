@@ -30,6 +30,7 @@ def Generator(opt, inc, outc):
     net = Resnet(inc, outc, opt.ngf, norm_layer=norm_layer, use_dropout=1 - opt.no_dropout, n_blocks=9)
     net.apply(init_weight)
     net.to(opt.gpu_ids[0])
+    net = nn.DataParallel(net, opt.gpu_ids)
     return net
 
 def Discriminator(opt, inc):
@@ -39,6 +40,7 @@ def Discriminator(opt, inc):
     net = Patchgan(inc, opt.ndf, n_layers=opt.n_layers_D, norm_layer=norm_layer)
     net.apply(init_weight)
     net.to(opt.gpu_ids[0])
+    net = nn.DataParallel(net, opt.gpu_ids)
     return net
 
   

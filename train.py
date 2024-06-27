@@ -2,40 +2,53 @@ from options.train_options import TrainOptions
 import dataset.dataset as ds
 from torch.utils.data import DataLoader
 from model.cyclegan import CycleGAN
-from utils.visualizer import Visualizer
-import time
+import os
+import matplotlib.pyplot as plt
+import utils.utils as utils
+def plot_num(all_losses, dir):
+    plt.figure()
+    for key, value in all_losses.items():
+        plt.plot(value, label=key)
+    plt.legend()
+    plt.savefig(f'{dir}/loss.png')
+    plt.close()
+
 def main():
     opt = TrainOptions().parse()
     train_dataset = ds.Dataset(opt)
     train_dataloader = DataLoader(train_dataset, batch_size=opt.batch_size, shuffle=True)
-    dataset_size = len(train_dataset)
-
     model = CycleGAN(opt)
-    visualizer = Visualizer(opt)
     totstep = 0
+    all_losses = {}
+    losses = {}
+    dir = opt.checkpoints_dir + '/' + opt.name
     for epoch in range(opt.epoch_count, opt.n_epochs + opt.n_epochs_decay + 1):
         epoch_iter = 0
-        iter_data_time = time.time()
-        for i, data in enumerate(train_dataloader):
-            iter_start_time = time.time()
-            if totstep % opt.print_freq == 0:
-                t_data = iter_start_time - iter_data_time
-            
+        for i, data in enumerate(train_dataloader):            
             model.input(data)
             model.optimize()
-            #print(len(data), len(train_dataset), opt.batch_size)
             totstep += opt.batch_size
             epoch_iter += opt.batch_size
-            if totstep % opt.display_freq == 0:
-                save_result = totstep % opt.update_html_freq == 0
-                visualizer.display_current_results(model.get_current_visuals(), epoch, save_result)
-            if totstep % opt.print_freq == 0:
-                losses = model.get_current_losses()
-                t_comp = (time.time() - iter_start_time) / opt.batch_size
-                visualizer.print_current_losses(epoch, epoch_iter, losses, t_comp, t_data)
-                if opt.display_id > 0:
-                    visualizer.plot_current_losses(epoch, float(epoch_iter) / dataset_size, losses)
-            iter_data_time = time.time()
+            cur_loss = model.get_current_losses()
+            for key, value in cur_loss.items():
+                if key not in losses:
+                    losses[key] = []
+                losses[key].append(value)
+            if totstep % 100 == 0:
+                for key, value in losses.items():
+                    if key not in all_losses:
+                        all_losses[key] = []
+                    all_losses[key].append(sum(value)/len(value))
+                    losses[key] = []
+                plot_num(all_losses, dir)
+                print(f"epoch: {epoch}, iter: {epoch_iter}, loss: {cur_loss}")
+            if totstep % 1000 == 0:
+                pic = model.get_current_visuals()
+                for key, value in pic.items():
+                    img = utils.tensor2im(value)
+                    if not os.path.exists(dir + '/' + str(totstep)):
+                        os.mkdir(dir + '/' + str(totstep))
+                    utils.save_image(img, f'{dir}/{totstep}/{key}.png')
         model.update_learning_rate()
         if epoch % opt.save_epoch_freq == 0:
             model.save_networks(epoch)
