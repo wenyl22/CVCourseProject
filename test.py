@@ -15,12 +15,9 @@ if __name__ == '__main__':
     opt.no_flip = True
     opt.display_id = -1
     dataset = ds.Dataset(opt)
-    dataset = DataLoader(dataset, batch_size=opt.batch_size, shuffle=False)
+    dataset = DataLoader(dataset, batch_size=opt.batch_size, shuffle=True)
     model = CycleGAN(opt)
-    model.load_networks(40)
-    # test with eval mode. This only affects layers like batchnorm and dropout.
-    # For [pix2pix]: we use batchnorm and dropout in the original pix2pix. You can experiment it with and without eval() mode.
-    # For [CycleGAN]: It should not affect CycleGAN as CycleGAN uses instancenorm without dropout.
+    model.load_networks(110)
     dir = f'{opt.results_dir}/{opt.name}'
     if not os.path.exists(opt.results_dir):
         os.mkdir(opt.results_dir)

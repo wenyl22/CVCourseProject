@@ -26,7 +26,7 @@ def main():
         epoch_iter = 0
         for i, data in enumerate(train_dataloader):            
             model.input(data)
-            model.optimize()
+            model.optimize(totstep)
             totstep += opt.batch_size
             epoch_iter += opt.batch_size
             cur_loss = model.get_current_losses()
@@ -42,6 +42,9 @@ def main():
                     losses[key] = []
                 plot_num(all_losses, dir)
                 print(f"epoch: {epoch}, iter: {epoch_iter}, loss: {cur_loss}")
+                # log the losses in dir/loss.txt
+                with open(f'{dir}/loss.txt', 'a') as f:
+                    f.write(f"totstep:{totstep} | loss: {cur_loss}\n")
             if totstep % 1000 == 0:
                 pic = model.get_current_visuals()
                 for key, value in pic.items():

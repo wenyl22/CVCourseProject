@@ -38,8 +38,8 @@ class BaseOptions():
         parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
         parser.add_argument('--load_size', type=int, default=286, help='scale images to this size')
         parser.add_argument('--crop_size', type=int, default=256, help='then crop to this size')
-        parser.add_argument('--max_dataset_size', type=int, default=2000, help='Maximum number of samples allowed per dataset. If the dataset directory contains more than max_dataset_size, only a subset is loaded.')
-        parser.add_argument('--display_winsize', type=int, default=256, help='display window size for both visdom and HTML')
+        parser.add_argument('--max_dataset_size', type=int, default=3000, help='Maximum number of samples allowed per dataset. If the dataset directory contains more than max_dataset_size, only a subset is loaded.')
+        parser.add_argument('--display_winsize', type=int, default=512, help='display window size for both visdom and HTML')
         # additional parameters
         parser.add_argument('--epoch', type=str, default='latest', help='which epoch to load? set to latest to use latest cached model')
         parser.add_argument('--load_iter', type=int, default='0', help='which iteration to load? if load_iter > 0, the code will load models by iter_[load_iter]; otherwise, the code will load models by [epoch]')
@@ -74,7 +74,7 @@ class BaseOptions():
         parser.add_argument('--lambda_A', type=float, default=10.0, help='weight for cycle loss (A -> B -> A)')
         parser.add_argument('--lambda_B', type=float, default=10.0, help='weight for cycle loss (B -> A -> B)')
         parser.add_argument('--lambda_identity', type=float, default=0.5, help='use identity mapping. Setting lambda_identity other than 0 has an effect of scaling the weight of the identity mapping loss. For example, if the weight of the identity loss should be 10 times smaller than the weight of the reconstruction loss, please set lambda_identity = 0.1')
-
+        parser.add_argument('--use_canny', type = int, default = 1, help='use canny edge as input')
         self.initialized = True
         return parser
 
