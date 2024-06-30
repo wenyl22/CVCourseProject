@@ -1,11 +1,7 @@
-dataset/monet2photo
 dataset/photo2paint
-dataset/anime2paint
 */**/__pycache__
 checkpoints/
 results/
-result_anime/
 try/
-try2/
-233/
-photo2paint/
+LR
+sr_checkpoints/

@@ -15,9 +15,9 @@ if __name__ == '__main__':
     opt.no_flip = True
     opt.display_id = -1
     dataset = ds.Dataset(opt)
-    dataset = DataLoader(dataset, batch_size=opt.batch_size, shuffle=True)
+    dataset = DataLoader(dataset, batch_size=opt.batch_size, shuffle=False)
     model = CycleGAN(opt)
-    model.load_networks(110)
+#    model.load_networks('latest')
     dir = f'{opt.results_dir}/{opt.name}'
     if not os.path.exists(opt.results_dir):
         os.mkdir(opt.results_dir)

@@ -18,7 +18,7 @@ class CycleGAN(nn.Module):
         # D_X: discriminate realB vs generated from G(A)
         # D_Y: discriminate realA vs generated from F(B)
         self.model_names = ['G', 'F', 'D_X', 'D_Y']
-        self.visual_names = ['real_A', 'fake_B', 'rec_A', 'idt_B', 'real_B', 'fake_A', 'rec_B', 'idt_A']
+        self.visual_names = ['real_A', 'fake_B', 'rec_A', 'idt_B', 'real_B', 'fake_A', 'rec_B', 'idt_A', 'real_A_canny', 'real_B_canny']
         self.loss_names = ['D_X', 'G', 'cycle_A', 'idt_A',  'D_Y', 'F','cycle_B', 'idt_B', 'gpB', 'gpA']
         self.fake_A_pool = ImagePool(opt.pool_size)
         self.fake_B_pool = ImagePool(opt.pool_size)
@@ -94,7 +94,6 @@ class CycleGAN(nn.Module):
         self.loss_D_Y = (self.adv_loss(self.D_Y(self.real_A), r_label) + self.adv_loss(self.D_Y(fake_A.detach()), f_label))*0.5
         tot = self.loss_gpA * 0.5 + self.loss_D_Y
         tot.backward()
-        #self.loss_D_Y.backward()
         self.optimizer_D.step()
 
     def optimize(self, totstep = 0):
